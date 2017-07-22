@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			div{
+				width: 50px;
+				height: 50px;
+				background: red;
+				position: absolute;
+				top:50px;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="button" id="btn" value="按钮" />
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+<script type="text/javascript" src="Mtween.js"></script>
+<script type="text/javascript">
+var btn = document.getElementById('btn');//声明按钮
+var divs = document.getElementsByTagName('div');//声明div
+for(var i=0;i<divs.length;i++){
+	divs[i].style.left = i*60+'px';
+}//for循环所有的div定位 出 left坐标
+//开关控制两种状态的切换
+//true:400,false:50
+var onOff = true;//设置每个div的开关
+//控制运动没结束时，不可以重复运动
+var onOff2 = true;//设置按钮开关
+var timer = null;//定时器未定义样式
+var n = 0;//n来代表div的个数
+btn.onclick = function(){//btn的点击事件
+	if(onOff2){//如果开关是开的
+		//开始运动，关闭开关，在运动过程中不可以重复运动
+		onOff2 = false;//进来后就把开关关掉
+		//开启定时器，n++，让div依次运动
+		timer = setInterval(function(){
+			//加入重复定时器
+			move({
+				obj:divs[n],//对象时是每个div
+				attrs:{//属性名：是top；如果是真，到top是400位置；如果开关是关，到top50的位置
+					//用三目简化代码，不用也可以写出来
+					top:onOff?400:50//这里是真 的 可以到400
+				},
+				duration:500,//每个div运行的毫秒时间
+				callBack:function(){//回调函数
+					if(this==divs[divs.length-1]){//如果当前运行的div是最后一个div那么执行以下代码
+						//400:50切换
+						onOff = !onOff;//开关变成假的，
+						//可以再次运动
+						onOff2 = true;//按钮定时器变成开的
+						//重置n=0,下次运动时，第一个div先运动，然后依次运动
+						n = 0; 
+					}
+				}
+			})
+			
+			n++;//执行n加加
+			
+			//n=div的个数，所有div都加上了运动，关闭定时器
+			if(n==divs.length){//如果n的个数等于了div的个数，那么停止定时器
+				clearInterval(timer);
+			}
+		},200);
+		
+	}
+}
+</script>
+	</body>
+</html>
